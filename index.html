@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AniFlix</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Poppins', sans-serif; /* Apply the font to the entire website */
+        margin: 0;
+        padding: 0;
+        background: radial-gradient(circle at center, #ff9a9e, #fad0c4, #fbc2eb, #a18cd1); /* Pinkish nebula gradient */
+        background-size: cover; /* Ensure the gradient covers the entire screen */
+        color: #fff; /* White text for contrast */
+      }
+      header,
+      footer {
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        padding: 1em;
+      }
+      nav {
+        background-color: #B8DAD9; /* Light blue color for the navigation bar */
+        display: flex;
+        align-items: center;
+        justify-content: space-between; /* Align links to the left and search bar to the right */
+        padding: 10px 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      nav a {
+        color: #333; /* Adjust text color for better contrast */
+        text-decoration: none;
+        font-weight: bold;
+        margin-right: 15px;
+        padding-right: 15px; /* Add padding to the right for spacing */
+        border-right: 1px solid #555; /* Add a vertical line to separate options */
+        transition: color 0.3s;
+      }
+
+      nav a:last-child {
+        border-right: none; /* Remove the line for the last option */
+      }
+
+      nav a:hover {
+        color: #9147ff; /* Highlight color on hover */
+      }
+
+      nav input[type="text"] {
+        padding: 10px; /* Add padding for better spacing */
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        max-width: 300px; /* Limit the width of the search bar */
+        margin-right: 10px; /* Add spacing between the input and the button */
+        box-sizing: border-box; /* Ensure padding is included in the width */
+      }
+
+      nav button {
+        padding: 10px 15px; /* Adjust padding for better alignment */
+        border-radius: 5px;
+        border: none;
+        background-color: #9147ff;
+        color: white;
+        cursor: pointer;
+        margin-left: 0; /* Remove unnecessary margin */
+      }
+
+      nav button:hover {
+        background-color: #772ce8;
+      }
+      .dropdown {
+        position: relative;
+        display: inline-block;
+      }
+      .dropdown-content {
+        position: absolute;
+        background-color: #222; /* Dark background for the dropdown */
+        min-width: 200px; /* Adjust the width of the dropdown */
+        box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.5); /* Add a shadow for depth */
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #555; /* Add a border for better visibility */
+      }
+      .dropdown-content a {
+        color: #fff; /* White text for contrast */
+        text-decoration: none;
+        padding: 10px 15px; /* Add padding for better spacing */
+        border-radius: 5px; /* Rounded corners */
+        background-color: #333; /* Slightly lighter background for items */
+        transition: background-color 0.3s, transform 0.2s; /* Smooth hover effect */
+        cursor: pointer;
+      }
+      .dropdown-content a:hover {
+        background-color: #47fcff; /* Highlight color on hover */
+        transform: scale(1.05); /* Slight zoom effect on hover */
+      }
+      .dropdown-content.hidden {
+        display: none; /* Ensure the dropdown is completely hidden */
+        z-index: -1; /* Push it behind other elements */
+      }
+      .dropdown a {
+        color: black; /* Set the "Genres" link color to black */
+        text-decoration: none;
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      .dropdown-content a {
+      color: white; /* Set the text color to white */
+      }
+      .dropdown a:hover {
+        color: black; /* Highlight the "Genres" link on hover */
+      }
+      .hidden {
+        display: none !important; /* Ensure the element is completely hidden */
+      }
+      .container {
+        padding: 20px;
+      }
+      .movies {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr); /* 5 movies per row */
+        gap: 10px; /* Add slight spacing between movies */
+        position: relative; /* Ensure the movie container is properly positioned */
+        z-index: 1; /* Set a higher z-index for the movie cards */
+      }
+      .movie {
+        background: #222;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s, box-shadow 0.3s;
+        position: relative; /* Ensure the movie cards are clickable */
+        z-index: 2; /* Ensure movie cards are above other elements */
+        cursor: pointer; /* Add this line */
+      }
+      .movie:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+      }
+      .movie img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+      .movie p {
+        padding: 10px;
+        font-size: 14px;
+        text-align: center;
+        color: #fff;
+      }
+      .favorites,
+      .contact,
+      .signup,
+      .genres {
+        margin-top: 30px;
+      }
+      .favorites h2 {
+        background-color: #1e1e2f; /* Dark background color */
+        color: #fff; /* White text for contrast */
+        padding: 10px 20px; /* Add padding for spacing */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        display: inline-block; /* Ensure the box wraps around the text */
+        margin-bottom: 20px; /* Add spacing below the heading */
+      }
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+      .modal-content {
+        background-color: #1e1e2f; /* Dark background to match the theme */
+        color: #fff; /* White text for contrast */
+        border-radius: 10px;
+        padding: 20px;
+        margin: 10% auto;
+        width: 80%;
+        max-width: 800px; /* Limit the width */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        display: flex; /* Use flexbox for layout */
+        gap: 20px; /* Add spacing between image and details */
+        height: auto; /* Adjust height to fit content */
+        overflow: hidden; /* Prevent scrolling */
+      }
+
+      .modal-content img {
+        width: 30%; /* Reduce the width to 30% of the modal */
+        max-height: 300px; /* Limit the maximum height */
+        object-fit: cover; /* Ensure the image scales properly without distortion */
+        border-radius: 10px; /* Rounded corners for the image */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+      }
+
+      .modal-details {
+        flex: 1; /* Allow the details section to take the remaining space */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 10px; /* Reduce spacing between elements */
+      }
+
+      .modal-details h2 {
+        color: #9147ff; /* Purple heading color */
+        margin-bottom: 10px;
+        font-size: 1.2em; /* Reduce heading size */
+      }
+
+      .modal-details p {
+        margin: 10px 0;
+        line-height: 1.6; /* Improve readability */
+        font-size: 0.9em; /* Reduce paragraph text size */
+      }
+
+      .modal-details strong {
+        color: #47fcff; /* Highlight color for labels */
+      }
+
+      .modal-details button {
+        background-color: #9147ff;
+        color: white;
+        border: none;
+        padding: 8px 16px; /* Reduce button padding */
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        font-size: 0.9em; /* Reduce button text size */
+      }
+
+      .modal-details button:hover {
+        background-color: #772ce8;
+      }
+      #addToFavoritesBtn {
+        background-color: #47fcff; /* Light blue background */
+        color: #000; /* Black text */
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px; /* Add spacing above the button */
+        transition: background-color 0.3s;
+      }
+
+      #addToFavoritesBtn:hover {
+        background-color: #1e90ff; /* Darker blue on hover */
+      }
+      textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        background: #fff;
+        color: #000;
+        box-sizing: border-box;
+        font-size: 0.9em; /* Reduce textarea font size */
+      }
+      .login-form {
+        background: #B8DAD9;
+        color: #fff;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        max-width: 400px;
+        margin: 50px auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Center all child elements horizontally */
+      }
+
+      .login-form input {
+        width: 100%; /* Ensure both input fields take up the full width of the container */
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #000; /* Set border color to black */
+        background: #fff;
+        color: #000; /* Set text color to black */
+        text-align: left; /* Align the text inside the input fields to the left */
+        box-sizing: border-box; /* Include padding and border in the element's width */
+      }
+
+      .password-container {
+        position: relative;
+        width: 100%; /* Ensure it matches the width of the input field */
+        margin: 10px 0;
+      }
+
+      .password-container input {
+        width: 100%; /* Ensure the input takes up the full width */
+        padding: 10px;
+        padding-right: 40px; /* Add space for the icon */
+        border-radius: 5px;
+        border: 1px solid #000; /* Set border color to black */
+        background: #fff;
+        color: #000;
+        box-sizing: border-box;
+      }
+
+      .password-toggle {
+        position: absolute;
+        right: 10px; /* Position the icon inside the input field */
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 18px; /* Adjust size for better visibility */
+        color: #333; /* Optional: Adjust color for better contrast */
+      }
+
+      .login-form button {
+        width: 100%; /* Match the width of the input fields */
+        padding: 10px;
+        background-color: #9147ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .login-form button:hover {
+        background-color: #772ce8;
+      }
+
+      .login-form h2 {
+        color: #000; /* Set the "Login" heading color to black */
+      }
+
+      .login-form p {
+        color: #000; /* Set the "Already have an account?" text color to black */
+      }
+
+      .signup {
+        background: #B8DAD9;
+        color: #000000;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        max-width: 400px;
+        margin: 50px auto;
+      }
+      .signup input {
+        width: 100%; /* Ensure all input fields take up the full width of the container */
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #000; /* Set border color to black */
+        background: #fff;
+        color: #000; /* Set text color to black */
+        box-sizing: border-box; /* Include padding and border in the element's width */
+      }
+      .signup button {
+        width: 100%;
+        padding: 10px;
+        background-color: #9147ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      .signup button:hover {
+        background-color: #772ce8;
+      }
+      .signup h2 {
+        color: #000; /* Set the "Sign Up" heading color to black */
+      }
+
+      .signup label {
+        color: #000; /* Set the "Email" and "Username" labels to black */
+      }
+
+      .signup p {
+        color: #000; /* Set the "Already have an account?" text color to black */
+      }
+      form input,
+      form textarea {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      form button {
+        background-color: #333;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button {
+        background-color: #9147ff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+      button:hover {
+        background-color: #772ce8;
+        transform: scale(1.1);
+      }
+      #loading-message {
+        font-size: 18px;
+        text-align: center;
+        margin: 20px 0;
+      }
+      #search-input {
+        max-width: 500px;
+        padding: 10px;
+        border-radius: 10px;
+      }
+      .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 20px 0;
+      }
+      .pagination button {
+        padding: 8px 14px;
+        border-radius: 5px;
+        border: none;
+        background-color: #333;
+        color: white;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      .pagination button:hover {
+        background-color: #9147ff;
+      }
+      .active-reaction {
+        background-color: #772ce8 !important;
+        transform: scale(1.05);
+      }
+
+      footer {
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        padding: 10px 0;
+        position: relative;
+        bottom: 0;
+        width: 100%;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.5);
+      }
+
+      footer p {
+        margin: 0;
+        font-size: 14px;
+      }
+
+      .hero {
+        text-align: left;
+        color: #000; /* Set text color to black */
+        padding: 20px;
+        position: relative;
+      }
+
+      .hero-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        z-index: 1;
+      }
+
+      .hero-image {
+        width: 100%; /* Make the image span the full width of the container */
+        max-height: 500px; /* Limit the maximum height */
+        object-fit: cover; /* Ensure the image scales properly without distortion */
+        border-radius: 10px; /* Add rounded corners for a polished look */
+        margin-top: 20px; /* Add spacing above the image */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add a shadow for depth */
+        z-index: 0;
+      }
+
+      .contact-form {
+        background: #B8DAD9; /* Light blue background */
+        color: #000; /* Black text color */
+        border-radius: 10px; /* Rounded corners */
+        padding: 20px; /* Inner padding */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        max-width: 400px; /* Limit the width */
+        margin: 50px auto; /* Center the form */
+      }
+
+      .contact-form h2 {
+        color: #000; /* Black heading color */
+        text-align: center; /* Center the heading */
+        margin-bottom: 20px; /* Add spacing below the heading */
+      }
+
+      .contact-form label {
+        display: block; /* Ensure labels are on their own line */
+        margin-bottom: 5px; /* Add spacing below labels */
+        font-weight: bold; /* Make labels bold */
+      }
+
+      .contact-form input,
+      .contact-form textarea {
+        width: 100%; /* Full width for inputs and textarea */
+        padding: 10px; /* Inner padding */
+        margin: 10px 0; /* Spacing between fields */
+        border-radius: 5px; /* Rounded corners */
+        border: 1px solid #000; /* Black border */
+        background: #fff; /* White background */
+        color: #000; /* Black text color */
+        box-sizing: border-box; /* Include padding and border in width */
+      }
+
+      .contact-form button {
+        width: 100%; /* Full width for the button */
+        padding: 10px; /* Inner padding */
+        background-color: #9147ff; /* Purple background */
+        color: white; /* White text color */
+        border: none; /* Remove border */
+        border-radius: 5px; /* Rounded corners */
+        cursor: pointer; /* Pointer cursor on hover */
+        font-weight: bold; /* Bold text */
+      }
+
+      .contact-form button:hover {
+        background-color: #772ce8; /* Darker purple on hover */
+      }
+
+      .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        color: #fff;
+        font-size: 1.5em;
+        cursor: pointer;
+        z-index: 1001;
+      }
+
+      .close-modal:hover {
+        color: #ff4d4d; /* Highlight color on hover */
+      }
+
+      /* Add this CSS for the box styling */
+      .heading-box {
+        background-color: #B8DAD9; /* Dark background to match the theme */
+        color: #000000; /* White text for contrast */
+        padding: 10px 20px; /* Add padding for spacing */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        display: inline-block; /* Ensure the box wraps around the text */
+        margin-bottom: 20px; /* Add spacing below the heading */
+      }
+
+      #top-movies-heading {
+        background-color: #1e1e2f; /* Dark background color */
+        color: #fff; /* White text for contrast */
+        padding: 10px 20px; /* Add padding for spacing */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        display: inline-block; /* Prevent the box from stretching */
+        font-family: 'Poppins', sans-serif; /* Use a futuristic font */
+        font-size: 1.8em; /* Adjust font size */
+        margin: 20px left; /* Add spacing to the left */
+        max-width: fit-content; /* Ensure the box only wraps around the text */
+        white-space: nowrap; /* Prevent the text from wrapping */
+      }
+
+      .genre-heading {
+        background-color: #1e1e2f; /* Dark background color */
+        color: #fff; /* White text for contrast */
+        padding: 10px 20px; /* Add padding inside the box */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        display: inline-block; /* Ensure the box wraps around the text */
+        margin: 20px; /* Add spacing around the heading */
+      }
+
+      #searchResultsHeading {
+        background-color: #1e1e2f; /* Purple background */
+        color: #fff; /* White text for contrast */
+        padding: 10px 20px; /* Add padding for spacing */
+        border-radius: 10px; /* Rounded corners */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Add shadow for depth */
+        display: inline-block; /* Ensure the box wraps around the text */
+        margin-bottom: 20px; /* Add spacing below the heading */
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Updated Navigation Bar -->
+    <nav>
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <!-- Logo and Website Name -->
+        <img src="https://i.pinimg.com/736x/0c/1b/7b/0c1b7b23e76d26632cdda94c750a64a0.jpg" alt="AniFlix Logo" style="width: 50px; height: 50px; border-radius: 50%;" />
+        <h1 style="font-size: 1.5em; margin: 0; font-family: 'Poppins', sans-serif; color: #333;">AniFlix</h1>
+
+        <!-- Navigation Links -->
+        <a href="#" onclick="showSection('home')">Home</a>
+        <div class="dropdown">
+          <a href="#" onclick="toggleDropdown()">Genres</a>
+          <div id="genresDropdown" class="dropdown-content hidden"></div>
+        </div>
+        <a href="#" onclick="showSection('favoritesSection')">Favorites</a>
+        <a href="#" onclick="showSection('contactSection')">Contact</a>
+        <a href="#" onclick="showSection('signupSection')">Sign Up</a>
+        <a href="#" onclick="logout()">Logout</a>
+      </div>
+      <div style="margin-left: auto; display: flex; align-items: center;">
+        <div style="position: relative;">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search movies..."
+            oninput="showSuggestions()"
+            style="width: 100%;"
+          />
+          <div id="suggestions" style="position: absolute; top: 100%; left: 0; width: 100%; background-color: #222; color: #fff; border: 1px solid #555; border-radius: 5px; max-height: 200px; overflow-y: auto; display: none; z-index: 1000;"></div>
+        </div>
+        <button id="search-button" onclick="searchMovies()">Search</button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero">
+      <div class="hero-overlay">
+        <h1>Welcome to AniFlix</h1>
+        <p>Your ultimate destination for anime movies!</p>
+      </div>
+      <img src="https://images3.alphacoders.com/105/thumb-1920-1053147.jpg" alt="Peaceful" class="hero-image" />
+    </div>
+
+    <div class="container">
+      <!-- Login Form -->
+      <div class="login-form" id="loginForm">
+        <h2>Login</h2>
+        <input type="text" id="username" placeholder="Username" />
+        <div class="password-container">
+          <input type="password" id="password" placeholder="Password" />
+          <span class="password-toggle" onclick="togglePassword('password')">👁</span>
+        </div>
+        <button onclick="login()">Login</button>
+        <p style="text-align: center; margin-top: 10px">
+          Don't have an account?
+          <a href="#" onclick="showSignupFromLogin()" style="color: #9147ff">Sign up</a>
+        </p>
+      </div>
+
+      <!-- Main Content -->
+      <div id="mainContent" class="hidden">
+        <div id="home">
+          <!-- Wrap the "Top Movies" heading in a container -->
+          <div id="topMoviesContainer">
+            <h2 id="top-movies-heading" class="heading-box">
+              Top Movies
+            </h2>
+          </div>
+
+          <!-- Movies Section -->
+          <div class="movies" id="movie-list"></div>
+          <div class="pagination" id="pagination"></div>
+        </div>
+
+        <div class="favorites hidden" id="favoritesSection">
+          <h2>Favorites</h2>
+          <div class="movies" id="favorites"></div>
+        </div>
+
+        <div class="genres hidden" id="genresSection">
+          <h2>Genres</h2>
+          <div id="genresList" style="display: flex; flex-wrap: wrap; gap: 10px;"></div>
+        </div>
+
+        <div class="contact-form hidden" id="contactSection">
+          <h2>Contact Us</h2>
+          <form id="contactForm" onsubmit="event.preventDefault(); alert('Thanks for reaching out!');">
+            <label for="name">Name</label>
+            <input type="text" id="name" placeholder="Your Name" required />
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Your Email" required />
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" placeholder="Your Phone Number" />
+            <label for="comment">Comment</label>
+            <textarea id="comment" rows="5" placeholder="Your Message" required></textarea>
+            <button type="submit">Submit</button>
+          </form>
+        </div>
+
+        <div class="signup hidden" id="signupSection">
+          <h2>Sign Up</h2>
+          <form id="signupForm" onsubmit="event.preventDefault(); signUp();">
+            <label for="signup-email">Email</label>
+            <input type="email" id="signup-email" placeholder="Email" required />
+
+            <label for="signup-username">Username</label>
+            <input type="text" id="signup-username" placeholder="Username" required />
+
+            <div class="password-container">
+              <label for="signup-password">Password</label>
+              <input type="password" id="signup-password" placeholder="Password" minlength="6" required />
+              <span class="password-toggle" onclick="togglePassword('signup-password')">👁</span>
+            </div>
+
+            <button type="submit">Sign Up</button>
+            <p style="text-align: center; margin-top: 10px">
+              Already have an account?
+              <a href="#" onclick="showLoginFromSignup()" style="color: #9147ff">Log in</a>
+            </p>
+          </form>
+        </div>
+
+        <div id="genrePage" class="hidden">
+          <h2 id="genreHeading" class="genre-heading">
+            <!-- Genre name will be dynamically inserted here -->
+          </h2>
+          <div class="movies" id="genreMovies"></div>
+          <div class="pagination" id="genrePagination"></div>
+        </div>
+
+        <div id="searchResultsPage" class="hidden">
+          <h2 id="searchResultsHeading" class="heading-box"></h2>
+          <div class="movies" id="searchResults"></div>
+          <div class="pagination" id="searchResultsPagination"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="movieModal" class="modal">
+      <div class="modal-content">
+        <button class="close-modal" onclick="closeModal()">✖</button>
+        <img id="modalImage" alt="Movie Image" />
+        <div class="modal-details">
+          <h2 id="modalTitle"></h2>
+          <p id="modalSynopsis"></p>
+          <p><strong>Genres:</strong> <span id="modalGenres"></span></p>
+          <div>
+            <button id="likeBtn" onclick="likeMovie()">👍 Like</button>
+            <span id="likeCount">0</span>
+            <button id="dislikeBtn" onclick="dislikeMovie()">👎 Dislike</button>
+            <span id="dislikeCount">0</span>
+          </div>
+          <button id="addToFavoritesBtn" onclick="addToFavorites()">Add to Favorites</button> <!-- New button -->
+          <hr />
+          <h3>Comments</h3>
+          <div id="commentsSection"></div>
+          <textarea id="commentInput" placeholder="Write a comment..."></textarea>
+          <button onclick="postComment()">Post Comment</button>
+        </div>
+      </div>
+    </div>
+
+    <section id="detailsSection" style="padding: 20px; background-color: #1e1e2f; color: #fff; text-align: center; margin-top: 30px;">
+      <h2>About AniFlix</h2>
+      <p>
+        AniFlix is your ultimate destination for discovering and enjoying the best anime movies. 
+        Explore genres, add your favorites, and share your reactions with the community.
+      </p>
+      <p>
+        Built with love for anime fans, AniFlix brings you a curated collection of top-rated anime movies.
+        Stay tuned for more updates and features!
+      </p>
+      <p style="margin-top: 20px; font-size: 14px; color: #aaa;">
+        &copy; 2025 AniFlix.
+      </p>
+    </section>
+
+    <footer>
+      <p>&copy; 2025 AniFlix</p>
+    </footer>
+</body>
+</html>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://api.themoviedb.org/3/movie/popular
